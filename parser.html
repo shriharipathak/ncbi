@@ -3,7 +3,7 @@
 <head>
     <title>Parser</title>
     <style>
-        p { display:none; }
+      /*p { display:none; }*/
        li:hover{
             
             background-color: Orange; cursor:pointer;
@@ -13,6 +13,8 @@
                  color: white;
     list-style-type: none;
     padding: 30px;
+	overflow:auto;
+	height:800;
             }
         li{
          border: 1px solid white;
@@ -20,34 +22,34 @@
     font-size: 30px;
     padding: 5px;
     text-align: center;}
-    #listContainer
+    #list
     {
         background-color: yellowgreen;
     border: 1px solid yellow;
     color: yellow;
     float: left;
-    font: 25px comic sans ms,italic;
+    font: 20px comic sans ms,italic;
     position: relative;
     text-align: center;
     width: 300px;
         }
-        #detailContainer
+        #detail
         {
             background-color: yellowgreen;
     border: 1px solid yellow;
     color: yellow;
     float: left;
-    font: 25px comic sans ms,italic;
+    font: 20px comic sans ms,italic;
     position: relative;
     text-align: center;
-    width: 300px;
+    width: 600px;
             }
     </style>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
     <div id="search">
-        <input id="txtTerm" type="text" value="asd" />
+        <input id="txtTerm" type="text" value="pmp22" />
         <select id="drpDatabase">
             <option value="select">Select Database</option>
             <option value="/sites/gquery">All Databases</option>
@@ -97,13 +99,18 @@
     </div>
     <div id="container" >
     
-        <div id="listContainer">
-            <h2>Article Id List</h2>
-            
+        <div id="list">
+            <h2>Article List</h2>
+            <div id="listContainer" >  
+          
+            </div>
            
         </div>
-        <div id="detailContainer">
-            <h2>Article Detail</h2>
+        <div id="detail">
+          <h2>Article Detail</h2>
+          <div id="detailContainer" style="display:none">  
+          
+            </div>
         </div>
     </div>
 </body>
@@ -144,8 +151,8 @@
 					 *  <AbstractText>Particles of poorly water
 					 * </Abstract>
 					 */
-					var Abstract = detailDocElt.getElementsByTagName("Abstract"); // get its childnodes <AbstractText>
-                    var aText = Abstract[0].childNodes[0];
+					var Affiliation = detailDocElt.getElementsByTagName("Affiliation"); // get its childnodes <AbstractText>
+                    var aText = Affiliation[0].textContent;
                       //alert(aText.textContent);
                       
                       
@@ -168,19 +175,32 @@
 					*		</Author>
 					*</AuthorList>	
 					*/
-					var AuthorList = detailDocElt.getElementsByTagName("AuthorList"); // get athor Name from this node
-                       
+					var Authors = detailDocElt.getElementsByTagName("Author"); // get athor Name from this node
+                       var authorCount = 0;
+					   while (authorCount < Authors.length) {
+                    li = li+ '<li>' + Authors[authorCount].childNodes[2].textContent +' '+Authors[authorCount].childNodes[1].textContent+' '+Authors[authorCount].childNodes[0].textContent+'</li>';
+                    //$('#ulDetail').append(li);
+                    authorCount++;
+                }
+					   
                       
                       if($('#detailContainer').children().length == 1)
-                      { $('#detailContainer').append('<p style="display:none">'+ArticleText+'</p>');
+                      { $('#detailContainer').append('<p>'+ArticleText+'</p><h4>Abstract</h4><p >'+aText+'</p><ul id="ulDetail">'+li+'</ul>');
 						
                       }
                       else{  
-					  $('p').slideUp("fast");
-					  $('p').text(ArticleText);
+                        $('#detailContainer').slideUp("fast",function() { 
+                          $('#detailContainer').empty().append('<p >'+ArticleText+'</p><h4>Abstract</h4><p>'+aText+'</p><ul id="ulDetail">'+li+'</ul>');
+						  //$('#ulDetail').append(li);
+                        });
+					  
+					  
+                        //alert(li);
+						//$('#ulDetail').append(li);
+
 					  }
-					  $('p').slideDown("slow");
-                     //$('#detailContainer').append('<p>'+ArticleTitles[0].textContent+'</p>');
+					  $('#detailContainer').slideDown("slow");
+                     
 				});
 				//
 				
