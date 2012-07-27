@@ -50,7 +50,7 @@
 <body>
     <div id="search">
         <input id="txtTerm" type="text" value="pmp22" />
-        <select id="drpDatabase">
+        <select id="drpDatabase" disabled="disabled" >
             <option value="select">Select Database</option>
             <option value="/sites/gquery">All Databases</option>
             <option value="pubmed" selected="selected">PubMed</option>
@@ -185,24 +185,20 @@
 					   
                       
                       if($('#detailContainer').children().length == 1)
-                      { $('#detailContainer').append('<p>'+ArticleText+'</p><h4>Abstract</h4><p >'+aText+'</p><ul id="ulDetail">'+li+'</ul>');
+                      { $('#detailContainer').append('<p>'+ArticleText+'</p><h4>Abstract</h4><p >'+aText+'</p><h4>Authors</h4><ul id="ulDetail">'+li+'</ul>');
 						
                       }
                       else{  
                         $('#detailContainer').slideUp("fast",function() { 
-                          $('#detailContainer').empty().append('<p >'+ArticleText+'</p><h4>Abstract</h4><p>'+aText+'</p><ul id="ulDetail">'+li+'</ul>');
+                          $('#detailContainer').empty().append('<p >'+ArticleText+'</p><h4>Abstract</h4><p>'+aText+'</p><h4>Authors</h4><ul id="ulDetail">'+li+'</ul>');
 						  //$('#ulDetail').append(li);
                         });
 					  
-					  
-                        //alert(li);
-						//$('#ulDetail').append(li);
-
 					  }
 					  $('#detailContainer').slideDown("slow");
                      
 				});
-				//
+				
 				
 				});
 				
