@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  <style>
+  h4{
+  background-color: #FAFAFA;
+    border: 1px solid grey;
+    border-radius: 5px 5px 5px 5px;
+    font: 18px georgia,arial;
+    padding: 5px;
+	cursor: pointer;
+  }
+  #accordion div{
+  
+  background-color: #fcfcfc;
+    border: 0.5px solid grey;
+    border-radius: 5px 5px 5px 5px;
+    display: block;
+    font: italic 17px monotype;
+  }
+  </style>
+  
+  
+</head>
+<body style="font-size:62.5%;">
+ <div id="search">
+        <input id="txtTerm" type="text" value="pmp22" />
+        <select id="drpDatabase" disabled="disabled" >
+            <option value="select">Select Database</option>
+            <option value="/sites/gquery">All Databases</option>
+            <option value="pubmed" selected="selected">PubMed</option>
+            <option value="/protein">Protein</option>
+            <option value="/nuccore">Nucleotide</option>
+            <option value="/nucgss">GSS</option>
+            <option value="/nucest">EST</option>
+            <option value="/structure">Structure</option>
+            <option value="/genome">Genome</option>
+            <option value="/assembly">Assembly</option>
+            <option value="/bioproject">BioProject</option>
+            <option value="/biosample">BioSample</option>
+            <option value="/biosystems">BioSystems</option>
+            <option value="/books">Books</option>
+            <option value="/cdd">Conserved Domains</option>
+            <option value="/clone">Clone</option>
+            <option value="/gap">dbGaP</option>
+            <option value="/dbvar">dbVar</option>
+            <option value="/epigenomics">Epigenomics</option>
+            <option value="/gene">Gene</option>
+            <option value="/gds">GEO DataSets</option>
+            <option value="/geoprofiles">GEO Profiles</option>
+            <option value="/homologene">HomoloGene</option>
+            <option value="/mesh">MeSH</option>
+            <option value="/ncbisearch">NCBI Web Site</option>
+            <option value="/nlmcatalog">NLM Catalog</option>
+            <option value="/omia">OMIA</option>
+            <option value="/omim">OMIM</option>
+            <option value="/pmc">PMC</option>
+            <option value="/popset">PopSet</option>
+            <option value="/probe">Probe</option>
+            <option value="/proteinclusters">Protein Clusters</option>
+            <option value="/pcassay">PubChem BioAssay</option>
+            <option value="/pccompound">PubChem Compound</option>
+            <option value="/pcsubstance">PubChem Substance</option>
+            <option value="/pubmedhealth">PubMed Health</option>
+            <option value="/snp">SNP</option>
+            <option value="/sra">SRA</option>
+            <option value="/taxonomy">Taxonomy</option>
+            <option value="/toolkit">ToolKit</option>
+            <option value="/toolkitall">ToolKitAll</option>
+            <option value="/unigene">UniGene</option>
+            <option value="/unists">UniSTS</option>
+        </select>
+        <input id="btnSearch" type="button" value="button" />
+    </div>
+<div id="accordion">
+	
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+   
+  
+    // This will search all Article Ids in Databse
+    $("#btnSearch").click(function () {
+
+        var term = $("#txtTerm").val();
+        var database = $("#drpDatabase").val();
+        var listUrl = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=" + database + "&term=" + term + "&datetype=edat&usehistory=y";
+
+
+
+        $.get(listUrl, function (listXml) {
+            lDocElt = listXml.documentElement;
+            var articleCountArray = lDocElt.getElementsByTagName("Count");
+            var articleCount = articleCountArray[0].textContent;
+
+            var QueryKeyArray = lDocElt.getElementsByTagName("QueryKey");
+            var QueryKey = QueryKeyArray[0].textContent;
+
+            var WebEnvArray = lDocElt.getElementsByTagName("WebEnv");
+            var WebEnv = WebEnvArray[0].textContent;
+
+
+            retmax = 10; // number of records to return per loop
+            var fetchUrl = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=' + database + '&query_key=' + QueryKey + '&WebEnv=' + WebEnv + '&retstart=0&retmax=10&retmode=xml';
+
+            $.get(fetchUrl, function (detailXml) {
+
+                var ArticleSet = detailXml.documentElement; // root Element
+                PubmedArticles = ArticleSet.getElementsByTagName('PubmedArticle');
+                
+
+                // looping through PubmedArticle
+                for (pubmedCount = 0; pubmedCount < PubmedArticles.length; pubmedCount++) {
+                  
+                 
+                  
+                  var articleChildren = PubmedArticles[pubmedCount].childNodes;
+                  alert(articleChildren.length);
+                  //looping through pubmedArticles Children
+                  for(childCounter = 0; childCounter < articleChildren.length; childCounter++){
+                   alert(childCounter);
+                    //if(PubmedArticles[pubmedCount].childNodes[childCounter].nodeType == 1){
+                    //alert(PubmedArticles[pubmedCount].childNodes[childCounter].nodeName);
+                      
+                    //}
+                    
+                  }
+                  
+                  
+                  
+                  var MedlineCitation = PubmedArticles[pubmedCount].getElementsByTagName('MedlineCitation');
+                    var MedlineCitationChildren = MedlineCitation[0].childNodes;
+                    var Article = MedlineCitationChildren[5];
+                    var ArticleChildren = Article.childNodes;
+                    var ArticleTitleText = ArticleChildren[3].textContent;
+
+					var Abstract = ArticleChildren[7];
+					var AbstractChildren = ArticleChildren[7].childNodes;
+					
+                    content = '<h4>' + ArticleTitleText + '</h4><div><p>asdasd asdasd assad asdasd asdasd asdasd </p></div>';
+                    $('#accordion').append(content);
+                }
+
+                $("#accordion > :header").click(function() {
+                		$(this).next().toggle('slow');
+                		return false;
+                	}).next().hide();
+
+
+
+                //we need a loop to fetch "retmax" records per hit, till we reach maxNode Count, for now ignoring it !!
+                //while()
+                //{
+
+                //				innerLoopCounter = 0;
+                //				
+                //				var ArticleTitleArray = dDocElt.getElementsByTagName("ArticleTitle");
+                //				
+                //				// getting all abstract text in seperate <p> 
+                //				var AbstractTextArray = dDocElt.getElementsByTagName("AbstractText");
+                //			
+                //				
+                //				
+                //				while(innerLoopCounter < retmax)
+                //				{
+
+                //				    content = '<h4>' + ArticleTitleArray[innerLoopCounter].textContent + '</h4><div><p>asdasd asdasd assad asdasd asdasd asdasd </p></div>';
+                //					$('#accordion').append(content);
+                //					innerLoopCounter++;
+                //				}
+                //				
+                //				//retstart = loopCounter; // records start from
+                //					//loopCounter = loopCounter + retmax;
+                //			  //} // while end
+                //			  
+                //			  //comment
+                //			  $("#accordion > :header").click(function() {
+                //		$(this).next().toggle('slow');
+                //		return false;
+                //	}).next().hide();
+                //	
+                //			  //comment
+                //			  
+                //			  
+
+
+            }); // inner get end
+  
+
+
+        });
+
+    });
+
+  
+    
+</script>
