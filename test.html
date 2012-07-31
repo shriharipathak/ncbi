@@ -6,7 +6,7 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
   <style>
-  h4{
+ #accordion h4{
   background-color: #FAFAFA;
     border: 1px solid grey;
     border-radius: 5px 5px 5px 5px;
@@ -21,6 +21,10 @@
     border-radius: 5px 5px 5px 5px;
     display: block;
     font: italic 17px monotype;
+  }
+  
+  li{
+  padding: 10px 0;
   }
   </style>
   
@@ -88,7 +92,7 @@
   
     // This will search all Article Ids in Databse
     $("#btnSearch").click(function () {
-
+		$('#accordion').empty();	
         var term = $("#txtTerm").val();
         var database = $("#drpDatabase").val();
         var listUrl = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=" + database + "&term=" + term + "&datetype=edat&usehistory=y";
@@ -135,17 +139,50 @@
 							
 							case 'MedlineCitation':
 								var mcChildren = vPubmedChildNode.childNodes;
-								mcChildCounter = 0;
+								mcChildCounter = 1;
 								while(mcChildCounter < mcChildren.length){
 									if(mcChildren[mcChildCounter].nodeName == 'Article'){
-										alert('article Child: '+ mcChildren[mcChildCounter].childNodes.length);
+										ArticleChildCounter = 1;
+										
+										var pArticleTitle = pAbstract = pAuthorList = '';
+										while(ArticleChildCounter < mcChildren[mcChildCounter].childNodes.length){
+											//alert(mcChildren[mcChildCounter].childNodes[ArticleChildCounter].nodeName);
+											
+											switch(mcChildren[mcChildCounter].childNodes[ArticleChildCounter].nodeName){
+												case 'ArticleTitle':
+													// get nodeValue
+                            pArticleTitle = '<h4>'+mcChildren[mcChildCounter].childNodes[ArticleChildCounter].textContent+'</h4>';
+												break;
+												
+												case 'Abstract':
+													var Abstract = mcChildren[mcChildCounter].childNodes[ArticleChildCounter];
+													var AbstractChildCounter = 1;
+													//loop for AbstractText
+													//pAbstract = '<p><ul>';
+													while(AbstractChildCounter < Abstract.childNodes.length){
+															
+														pAbstract = pAbstract+ '<li>'+Abstract.childNodes[AbstractChildCounter].textContent+'</li>';
+														AbstractChildCounter = AbstractChildCounter+2;
+													}
+                            
+													pAbstract = '<div><ul>'+ pAbstract + '</ul></div>';
+                            
+												break;
+												
+												case 'AuthorList':
+													// loop for Author
+												break;
+											}
+											ArticleChildCounter = ArticleChildCounter+2;
+											
+										}
 									}
-									mcChildCounter++;
+									//mcChildCounter++;
+									mcChildCounter = mcChildCounter+2;
 								}
 							
 							break;
 							case 'PubmedData':
-							
 							break;
 							
 						}
@@ -154,24 +191,13 @@
                   }
                   
                   
-                  
-                  var MedlineCitation = PubmedArticles[pubmedCount].getElementsByTagName('MedlineCitation');
-                    var MedlineCitationChildren = MedlineCitation[0].childNodes;
-                    var Article = MedlineCitationChildren[5];
-                    var ArticleChildren = Article.childNodes;
-                    var ArticleTitleText = ArticleChildren[3].textContent;
-
-					var Abstract = ArticleChildren[7];
-					var AbstractChildren = ArticleChildren[7].childNodes;
-					
-                    content = '<h4>' + ArticleTitleText + '</h4><div><p>asdasd asdasd assad asdasd asdasd asdasd </p></div>';
-                    $('#accordion').append(content);
+                    $('#accordion').append(pArticleTitle+pAbstract);
                 }
 
                 $("#accordion > :header").click(function() {
-                		$(this).next().toggle('slow');
+                		$(this).next('div').toggle('very slow');
                 		return false;
-                	}).next().hide();
+                	}).next('div').hide();
 
 
 
