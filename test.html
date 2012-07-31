@@ -122,14 +122,34 @@
                  
                   
                   var articleChildren = PubmedArticles[pubmedCount].childNodes;
-                  alert(articleChildren.length);
+                  
                   //looping through pubmedArticles Children
-                  for(childCounter = 0; childCounter < articleChildren.length; childCounter++){
-                   alert(childCounter);
-                    //if(PubmedArticles[pubmedCount].childNodes[childCounter].nodeType == 1){
-                    //alert(PubmedArticles[pubmedCount].childNodes[childCounter].nodeName);
-                      
-                    //}
+                  for(pmchildCounter = 0; pmchildCounter < articleChildren.length; pmchildCounter++){
+                   
+                    // if its an element node, go for its child nodes
+					if(PubmedArticles[pubmedCount].childNodes[pmchildCounter].nodeType == 1){
+						var vPubmedChildNode = PubmedArticles[pubmedCount].childNodes[pmchildCounter];
+						
+						switch(vPubmedChildNode.nodeName)
+						{
+							
+							case 'MedlineCitation':
+								var mcChildren = vPubmedChildNode.childNodes;
+								mcChildCounter = 0;
+								while(mcChildCounter < mcChildren.length){
+									if(mcChildren[mcChildCounter].nodeName == 'Article'){
+										alert('article Child: '+ mcChildren[mcChildCounter].childNodes.length);
+									}
+									mcChildCounter++;
+								}
+							
+							break;
+							case 'PubmedData':
+							
+							break;
+							
+						}
+                    }
                     
                   }
                   
